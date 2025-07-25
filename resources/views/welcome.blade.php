@@ -49,17 +49,32 @@
             background-color: #e0e0e0;
             margin: 25px 0;
         }
-        .start-btn {
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .btn-login {
             background-color: #3498db;
             border: none;
             padding: 12px 30px;
             font-size: 18px;
             font-weight: 600;
             width: 100%;
-            margin-bottom: 20px;
         }
-        .start-btn:hover {
+        .btn-register {
+            background-color: #2ecc71;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+        }
+        .btn-login:hover {
             background-color: #2980b9;
+        }
+        .btn-register:hover {
+            background-color: #27ae60;
         }
         .disclaimer {
             font-size: 14px;
@@ -71,11 +86,6 @@
 <body>
 <div class="container">
     <div class="quiz-container">
-        <!-- Logo Section -->
-        <div class="quiz-logo">
-            <img src="/logo.jpg" alt="Personality Insights Quiz Logo">
-        </div>
-
         <div class="quiz-header">
             <h1>Personality Insights Quiz</h1>
             <p class="lead">Discover your unique personality traits and get personalized insights based on scientifically-backed analysis.</p>
@@ -106,7 +116,19 @@
 
         <div class="divider"></div>
 
-        <button class="btn btn-primary start-btn">Start Quiz Now</button>
+        @if (Route::has('login'))
+            <div class="auth-buttons">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="btn btn-login">Go to Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-login">Log in</a>
+
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn btn-register">Register</a>
+                    @endif
+                @endauth
+            </div>
+        @endif
 
         <p class="disclaimer">
             This quiz is designed for entertainment and self-reflection purposes.<br>
