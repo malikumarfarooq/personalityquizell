@@ -6,8 +6,8 @@
             <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-body text-center p-5">
-                        <h1 class="display-4 mb-4">Personality Insights Quiz</h1>
-                        <p class="lead mb-4">Discover your unique personality traits and get personalized insights based on scientifically-backed analysis.</p>
+                        <h1 class="display-4 mb-4">{{ $quiz->title }}</h1>
+                        <p class="lead mb-4">{{ $quiz->description }}</p>
 
                         <div class="text-start mb-5">
                             <div class="d-flex align-items-center mb-3">
@@ -16,7 +16,7 @@
                             </div>
                             <div class="d-flex align-items-center mb-3">
                                 <i class="bi bi-question-circle-fill text-primary me-2"></i>
-                                <span>10+ carefully crafted questions</span>
+                                <span>{{ $questionsCount }} carefully crafted questions</span>
                             </div>
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-robot text-primary me-2"></i>
@@ -26,22 +26,9 @@
 
                         <hr class="my-4">
 
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3">
-                                Go to Dashboard
-                            </a>
-                        @else
-                            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                                <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5 py-3">
-                                    Login
-                                </a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg px-5 py-3">
-                                        Register
-                                    </a>
-                                @endif
-                            </div>
-                        @endauth
+                        <a href="{{ route('quiz.begin') }}" class="btn btn-primary btn-lg px-5 py-3">
+                            <i class="bi bi-play-circle me-2"></i> START QUIZ NOW
+                        </a>
 
                         <p class="text-muted mt-4">
                             This quiz is designed for entertainment and self-reflection purposes.<br>
