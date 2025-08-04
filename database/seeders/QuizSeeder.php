@@ -12,7 +12,9 @@ class QuizSeeder extends Seeder
         Quiz::create([
             'title' => 'Personality Insights Quiz',
             'description' => 'Discover your personality traits with this comprehensive quiz',
-            'is_active' => true
+            'is_active' => true,
+            'duration' => 30, // minutes
+            'passing_score' => 5,
         ]);
     }
 }

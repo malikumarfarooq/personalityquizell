@@ -26,4 +26,10 @@ class Quiz extends Model
     {
         return $this->questions()->whereHas('activeOptions');
     }
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+        // Or whatever condition makes a quiz "active"
+    }
+
 }

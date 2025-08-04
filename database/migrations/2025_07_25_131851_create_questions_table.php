@@ -14,6 +14,7 @@ return new class extends Migration
             $table->text('text');
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->string('type')->default('multiple_choice')->after('order');
             $table->timestamps();
             $table->softDeletes();
         });

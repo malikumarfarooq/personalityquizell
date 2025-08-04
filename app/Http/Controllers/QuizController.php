@@ -8,6 +8,7 @@ use App\Models\Option;
 use App\Models\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Services\PersonalityAnalysisService;
 
 class QuizController extends Controller
 {
@@ -101,20 +102,57 @@ class QuizController extends Controller
 //        ]);
 //    }
 
+//    public function results(Request $request)
+//    {
+//        $answers = session()->get(self::SESSION_ANSWERS_KEY, []);
+//
+//        if (empty($answers)) {
+//            return redirect()->route('quiz.start')->with('error', 'Please complete the quiz first');
+//        }
+//
+//        $result = $this->calculateResults($answers);
+//
+//        return view('quiz.results', [
+//            'result' => $result,
+//            'analysisType' => 'free' // Always show free version
+//        ]);
+//    }
+
     public function results(Request $request)
     {
-        $answers = session()->get(self::SESSION_ANSWERS_KEY, []);
+        $validated = $request->validate([
+            'analysis_type' => 'required|in:free,premium'
+        ]);
 
-        if (empty($answers)) {
-            return redirect()->route('quiz.start')->with('error', 'Please complete the quiz first');
+        $user = auth()->user();
+        $quiz = Quiz::active()->first();
+
+        // Generate result
+        $result = $this->generateResult($user, $quiz, $request->all());
+
+        if ($validated['analysis_type'] === 'premium') {
+            return redirect()->route('results.show', $result);
         }
 
-        $result = $this->calculateResults($answers);
+        return redirect()->route('results.show', $result);
+    }
 
-        return view('quiz.results', [
-            'result' => $result,
-            'analysisType' => 'free' // Always show free version
-        ]);
+    protected function generateResult($user, $quiz, $answers)
+    {
+        $analysisService = new PersonalityAnalysisService();
+
+        $resultData = [
+            'user_id' => $user->id,
+            'quiz_id' => $quiz->id,
+            'answers' => $answers,
+            'title' => 'Your Personality Analysis',
+            'is_paid' => false
+        ];
+
+        // Merge analysis data
+        $resultData = array_merge($resultData, $analysisService->analyze($answers));
+
+        return Result::create($resultData);
     }
 
     protected function getActiveQuiz(): Quiz

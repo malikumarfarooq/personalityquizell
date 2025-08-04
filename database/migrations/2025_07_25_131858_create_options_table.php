@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('options', function (Blueprint $table) {
             $table->id();
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
-            $table->text('text');
+            $table->string('text');
             $table->integer('score')->default(0);
+            $table->boolean('is_correct')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
