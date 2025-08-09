@@ -13,10 +13,14 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->integer('duration')->default(30)->after('is_active');
-            $table->integer('passing_score')->default(5)->after('duration');
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        // Then add columns with ->after() in separate statements
+        Schema::table('quizzes', function (Blueprint $table) {
+            $table->integer('duration')->default(30)->after('is_active');
+            $table->integer('passing_score')->default(5)->after('duration');
         });
     }
 
