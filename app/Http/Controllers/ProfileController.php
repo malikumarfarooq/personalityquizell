@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -18,6 +19,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'isAdmin' => $request->user()->isAdmin(),
         ]);
     }
 
@@ -26,15 +28,31 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Handle password update if provided
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
         }
 
-        $request->user()->save();
+        // Handle email verification status if email changed
+        if ($user->isDirty('email')) {
+            $validated['email_verified_at'] = null;
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->update($validated);
+
+        // If admin is editing another user's profile
+        if ($request->has('user_id') && $user->isAdmin()) {
+            return Redirect::route('admin.users.edit', $request->user_id)
+                ->with('status', 'Profile updated successfully');
+        }
+
+        return Redirect::route('profile.edit')
+            ->with('status', 'profile-updated');
     }
 
     /**
@@ -56,5 +74,17 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Show user profile (admin view)
+     */
+    public function show(Request $request, User $user): View
+    {
+        if (!$request->user()->isAdmin()) {
+            abort(403);
+        }
+
+        return view('admin.users.show', compact('user'));
     }
 }

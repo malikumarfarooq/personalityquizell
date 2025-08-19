@@ -88,12 +88,12 @@
                 </a>
             </li>
 
-            <li>
-                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
-                    <i class="fas fa-chart-pie me-2"></i>
-                    <span>Reports</span>
-                </a>
-            </li>
+{{--            <li>--}}
+{{--                <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">--}}
+{{--                    <i class="fas fa-chart-pie me-2"></i>--}}
+{{--                    <span>Reports</span>--}}
+{{--                </a>--}}
+{{--            </li>--}}
 
 
             <li>
