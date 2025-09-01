@@ -11,8 +11,17 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['quiz_id', 'text', 'order'];
+    protected $fillable = [
+        'quiz_id',
+        'text',
+        'type',
+        'order',
+        'is_required'
+    ];
 
+    protected $casts = [
+        'is_required' => 'boolean',
+    ];
     public function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class);
@@ -26,5 +35,25 @@ class Question extends Model
     public function activeOptions(): HasMany
     {
         return $this->options()->where('is_active', true);
+    }
+
+    // Helper method to get badge class for type
+    public function getTypeBadgeAttribute()
+    {
+        $badges = [
+            'multiple_choice' => 'bg-info',
+            'checkbox' => 'bg-warning text-dark',
+            'textarea' => 'bg-primary'
+        ];
+
+        return $badges[$this->type] ?? 'bg-secondary';
+    }
+
+    // Helper method to get required badge
+    public function getRequiredBadgeAttribute()
+    {
+        return $this->is_required
+            ? '<span class="badge bg-success">Required</span>'
+            : '<span class="badge bg-secondary">Optional</span>';
     }
 }

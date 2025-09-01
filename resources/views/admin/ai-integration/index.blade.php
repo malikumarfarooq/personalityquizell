@@ -6,59 +6,98 @@
             <h1 class="h2">AI Integration</h1>
         </div>
 
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h4 class="mb-4">Configure OpenAI ChatGPT integration for quiz analysis</h4>
 
-                <div class="row mb-5">
-                    <div class="col-md-8">
-                        <h5 class="mb-3">OpenAI Configuration</h5>
+                <form action="{{ route('admin.ai-integration.store') }}" method="POST">
+                    @csrf
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">OpenAI API Key</label>
-                            <div class="input-group mb-2">
-                                <input type="password" class="form-control" value="sk_..." readonly>
-                                <button class="btn btn-outline-secondary" type="button" id="toggleKey">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                    <div class="row mb-5">
+                        <div class="col-md-8">
+                            <h5 class="mb-3">OpenAI Configuration</h5>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">OpenAI API Key</label>
+                                <div class="input-group mb-2">
+                                    <input type="password" name="openai_api_key" class="form-control"
+                                           value="{{ old('openai_api_key', $settings->openai_api_key ? 'sk_****************************' : '') }}"
+                                           placeholder="Enter new API key to update">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleKey">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted">Your API key is stored securely and never shared. Leave empty to keep current key.</small>
+                                @error('openai_api_key')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <small class="text-muted">Your API key is stored securely and never shared.</small>
-                        </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Default Language</label>
-                            <select class="form-select" style="max-width: 200px;">
-                                <option selected>English</option>
-                                <option>Spanish</option>
-                                <option>French</option>
-                                <option>German</option>
-                                <option>Japanese</option>
-                            </select>
-                        </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Default Language</label>
+                                <select name="default_language" class="form-select" style="max-width: 200px;">
+                                    <option value="English" {{ old('default_language', $settings->default_language) == 'English' ? 'selected' : '' }}>English</option>
+                                    <option value="Spanish" {{ old('default_language', $settings->default_language) == 'Spanish' ? 'selected' : '' }}>Spanish</option>
+                                    <option value="French" {{ old('default_language', $settings->default_language) == 'French' ? 'selected' : '' }}>French</option>
+                                    <option value="German" {{ old('default_language', $settings->default_language) == 'German' ? 'selected' : '' }}>German</option>
+                                    <option value="Japanese" {{ old('default_language', $settings->default_language) == 'Japanese' ? 'selected' : '' }}>Japanese</option>
+                                </select>
+                                @error('default_language')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div class="d-flex justify-content-start">
-                            <button class="btn btn-primary px-4">Save Configuration</button>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="my-5">
-
-                <div class="row">
-                    <div class="col-md-8">
-                        <h5 class="mb-3">Free Analysis Prompt</h5>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Prompt Template</label>
-                            <textarea class="form-control" rows="8" style="font-family: monospace;">
-You are an AI assistant helping users understand their quiz results. Based on their answers: (quiz_answers), provide a brief analysis of their personality type and general recommendations...
-
-Use (quiz_answers) to insert the user's quiz responses into the prompt</textarea>
-                            <div class="mt-2 text-muted">
-                                <small>Use <code>(quiz_answers)</code> to insert the user's quiz responses into the prompt</small>
+                            <div class="d-flex justify-content-start">
+                                <button type="submit" class="btn btn-primary px-4">Save Configuration</button>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <hr class="my-5">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="mb-3">Free Analysis Prompt</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Prompt Template</label>
+                                <textarea name="free_analysis_prompt" class="form-control" rows="8" style="font-family: monospace;">{{ old('free_analysis_prompt', $settings->free_analysis_prompt) }}</textarea>
+                                <div class="mt-2 text-muted">
+                                    <small>Use <code>(quiz_answers)</code> to insert the user's quiz responses into the prompt</small>
+                                </div>
+                                @error('free_analysis_prompt')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <h5 class="mb-3">Premium Analysis Prompt</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Premium Prompt Template</label>
+                                <textarea name="premium_analysis_prompt" class="form-control" rows="8" style="font-family: monospace;" placeholder="Enter premium analysis prompt template...">{{ old('premium_analysis_prompt', $settings->premium_analysis_prompt) }}</textarea>
+                                <div class="mt-2 text-muted">
+                                    <small>Use <code>(quiz_answers)</code> to insert the user's quiz responses into the prompt</small>
+                                </div>
+                                @error('premium_analysis_prompt')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-start mt-4">
+                        <button type="submit" class="btn btn-primary px-4">Save All Prompts</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -69,7 +108,7 @@ Use (quiz_answers) to insert the user's quiz responses into the prompt</textarea
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle API key visibility
             const toggleKey = document.getElementById('toggleKey');
-            const apiKeyInput = document.querySelector('input[type="password"]');
+            const apiKeyInput = document.querySelector('input[name="openai_api_key"]');
 
             toggleKey.addEventListener('click', function() {
                 if (apiKeyInput.type === 'password') {

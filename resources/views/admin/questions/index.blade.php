@@ -5,19 +5,26 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Questions</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
-                <a href="#" class="btn btn-sm btn-primary">
+                <a href="{{ route('admin.questions.create') }}" class="btn btn-sm btn-primary">
                     <i class="fas fa-plus me-1"></i> Add New Question
                 </a>
             </div>
         </div>
 
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <form>
+                        <form method="GET" action="{{ route('admin.questions.index') }}">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search questions..." name="search">
+                                <input type="text" class="form-control" placeholder="Search questions..." name="search" value="{{ $search }}">
                                 <button class="btn btn-outline-secondary" type="submit">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -27,13 +34,13 @@
                     <div class="col-md-6 text-end">
                         <div class="btn-group">
                             <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                All Quizzes
+                                {{ $quizId ? ($quizzes->find($quizId)->title ?? 'Selected Quiz') : 'All Quizzes' }}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">All Quizzes</a></li>
-                                <li><a class="dropdown-item" href="#">Personality Assessment</a></li>
-                                <li><a class="dropdown-item" href="#">Career Guidance Quiz</a></li>
-                                <li><a class="dropdown-item" href="#">Skills Evaluation</a></li>
+                                <li><a class="dropdown-item" href="{{ route('admin.questions.index', ['search' => $search]) }}">All Quizzes</a></li>
+                                @foreach($quizzes as $quiz)
+                                    <li><a class="dropdown-item" href="{{ route('admin.questions.index', ['search' => $search, 'quiz_id' => $quiz->id]) }}">{{ $quiz->title }}</a></li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
@@ -46,83 +53,47 @@
                             <th>Question</th>
                             <th>Quiz</th>
                             <th>Type</th>
-                            <th>Image</th>
+                            <th>Options</th>
                             <th>Required</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>What is your preferred work environment?</td>
-                            <td>Personality Assessment</td>
-                            <td><span class="badge bg-info">radio</span></td>
-                            <td><i class="fas fa-times text-muted"></i></td>
-                            <td><span class="badge bg-success">Required</span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="#" class="btn btn-outline-primary" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Select all skills you possess:</td>
-                            <td>Personality Assessment</td>
-                            <td><span class="badge bg-warning text-dark">checkbox</span></td>
-                            <td><i class="fas fa-check text-success"></i></td>
-                            <td><span class="badge bg-secondary">Optional</span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="#" class="btn btn-outline-primary" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Describe your ideal career path:</td>
-                            <td>Career Guidance Quiz</td>
-                            <td><span class="badge bg-primary">textarea</span></td>
-                            <td><i class="fas fa-times text-muted"></i></td>
-                            <td><span class="badge bg-success">Required</span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="#" class="btn btn-outline-primary" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>What motivates you most?</td>
-                            <td>Skills Evaluation</td>
-                            <td><span class="badge bg-info">radio</span></td>
-                            <td><i class="fas fa-times text-muted"></i></td>
-                            <td><span class="badge bg-success">Required</span></td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="#" class="btn btn-outline-primary" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-danger" title="Delete">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                        @forelse($questions as $question)
+                            <tr>
+                                <td>{{ Str::limit($question->text, 50) }}</td>
+                                <td>{{ $question->quiz->title }}</td>
+                                <td><span class="badge {{ $question->type_badge }}">{{ $question->type }}</span></td>
+                                <td>{{ $question->options_count ?? $question->options->count() }}</td>
+                                <td>{!! $question->required_badge !!}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ route('admin.questions.show', $question) }}" class="btn btn-outline-info" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('admin.questions.edit', $question) }}" class="btn btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin.questions.destroy', $question) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">No questions found.</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
+
+                {{ $questions->links() }}
             </div>
         </div>
     </div>
@@ -143,6 +114,9 @@
         }
         .text-muted {
             opacity: 0.5;
+        }
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
         }
     </style>
 @endpush

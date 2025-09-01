@@ -19,7 +19,8 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])->prefix('admin')->na
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
     Route::resource('questions', QuestionController::class);
-    Route::resource('ai-integration', AIIntegrationController::class)->only(['index', 'store']);
+//    Route::resource('ai-integration', AIIntegrationController::class)->only(['index', 'store']);
+    Route::resource('ai-integration', AIIntegrationController::class)->only(['index', 'store', 'update']);
     Route::resource('payments', PaymentController::class)->only(['index', 'store']);
     Route::resource('sales', SaleController::class)->only(['index']);
     Route::resource('users', UserController::class);
