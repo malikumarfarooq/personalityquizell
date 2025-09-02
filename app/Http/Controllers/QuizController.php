@@ -87,36 +87,6 @@ class QuizController extends Controller
         return view('quiz.analysis-choice');
     }
 
-//    public function results(Request $request)
-//    {
-//        $request->validate([
-//            'analysis_type' => 'required|in:free,premium',
-//        ]);
-//
-//        $answers = session()->get(self::SESSION_ANSWERS_KEY, []);
-//        $result = $this->calculateResults($answers);
-//
-//        return view('quiz.results', [
-//            'result' => $result,
-//            'analysisType' => $request->analysis_type,
-//        ]);
-//    }
-
-//    public function results(Request $request)
-//    {
-//        $answers = session()->get(self::SESSION_ANSWERS_KEY, []);
-//
-//        if (empty($answers)) {
-//            return redirect()->route('quiz.start')->with('error', 'Please complete the quiz first');
-//        }
-//
-//        $result = $this->calculateResults($answers);
-//
-//        return view('quiz.results', [
-//            'result' => $result,
-//            'analysisType' => 'free' // Always show free version
-//        ]);
-//    }
 
     public function results(Request $request)
     {
