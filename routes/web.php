@@ -12,9 +12,13 @@ use Illuminate\Support\Facades\Route;
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 // Quiz Routes (Public)
 Route::controller(QuizController::class)->group(function () {
