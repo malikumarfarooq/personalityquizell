@@ -62,7 +62,8 @@
                         @forelse($questions as $question)
                             <tr>
                                 <td>{{ Str::limit($question->text, 50) }}</td>
-                                <td>{{ $question->quiz->title }}</td>
+{{--                                <td>{{ $question->quiz->title }}</td>--}}
+                                <td>{{ $question->quiz?->title ?? 'No Quiz Assigned' }}</td>
                                 <td><span class="badge {{ $question->type_badge }}">{{ $question->type }}</span></td>
                                 <td>{{ $question->options_count ?? $question->options->count() }}</td>
                                 <td>{!! $question->required_badge !!}</td>

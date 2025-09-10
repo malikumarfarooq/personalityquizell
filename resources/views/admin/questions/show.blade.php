@@ -50,49 +50,51 @@
                     </div>
                 </div>
 
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Options</h5>
-                        @if($question->options->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                    <tr>
-                                        <th>Option Text</th>
-                                        <th>Score</th>
-                                        <th>Correct</th>
-                                        <th>Active</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($question->options as $option)
+                @if(in_array($question->type, ['multiple_choice', 'checkbox']))
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Options</h5>
+                            @if($question->options->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
                                         <tr>
-                                            <td>{{ $option->text }}</td>
-                                            <td>{{ $option->score }}</td>
-                                            <td>
-                                                @if($option->is_correct)
-                                                    <span class="badge bg-success">Yes</span>
-                                                @else
-                                                    <span class="badge bg-secondary">No</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($option->is_active)
-                                                    <span class="badge bg-success">Active</span>
-                                                @else
-                                                    <span class="badge bg-danger">Inactive</span>
-                                                @endif
-                                            </td>
+                                            <th>Option Text</th>
+                                            <th>Score</th>
+                                            <th>Correct</th>
+                                            <th>Active</th>
                                         </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <p class="text-muted">No options found for this question.</p>
-                        @endif
+                                        </thead>
+                                        <tbody>
+                                        @foreach($question->options as $option)
+                                            <tr>
+                                                <td>{{ $option->text }}</td>
+                                                <td>{{ $option->score }}</td>
+                                                <td>
+                                                    @if($option->is_correct)
+                                                        <span class="badge bg-success">Yes</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">No</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($option->is_active)
+                                                        <span class="badge bg-success">Active</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted">No options found for this question.</p>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
 
             <div class="col-md-4">

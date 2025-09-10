@@ -28,7 +28,7 @@
                                             <li><i class="bi bi-check-circle-fill text-success me-2"></i> Shareable results</li>
                                         </ul>
 
-                                        <form method="POST" action="{{ route('quiz.results') }}" class="mt-auto">
+                                        <form method="POST" action="{{ route('quiz.results', $quiz) }}" class="mt-auto">
                                             @csrf
                                             <input type="hidden" name="analysis_type" value="free">
                                             <button type="submit" class="btn btn-outline-primary w-100 py-2">
@@ -62,7 +62,7 @@
                                             <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Personal growth plan</li>
                                         </ul>
 
-                                        <form method="POST" action="{{ route('quiz.results') }}" class="mt-auto">
+                                        <form method="POST" action="{{ route('quiz.results', $quiz) }}" class="mt-auto">
                                             @csrf
                                             <input type="hidden" name="analysis_type" value="premium">
                                             <button type="submit" class="btn btn-primary w-100 py-2">

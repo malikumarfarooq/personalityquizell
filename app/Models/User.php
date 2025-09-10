@@ -11,6 +11,7 @@ use Laravel\Cashier\Billable;
 class User extends Authenticatable
 {
     use Billable;
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

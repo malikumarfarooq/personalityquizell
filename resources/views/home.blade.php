@@ -10,10 +10,15 @@
                     <p class="lead mb-4">A neuroscience-based personality test that reveals your unique cognitive and emotional patterns.</p>
                     <div class="d-flex flex-wrap gap-3">
                         @auth
-                            <a href="{{ route('quiz.start') }}" class="btn btn-primary">Start the Test</a>
+                            @if($quiz = App\Models\Quiz::active()->first())
+                                <a href="{{ route('quiz.start', $quiz) }}" class="btn btn-primary">Start the Test</a>
+                            @else
+                                <span class="btn btn-secondary">No quizzes available</span>
+                            @endif
                         @else
                             <a href="{{ route('register') }}" class="btn btn-primary">Start the Test</a>
                         @endauth
+
                         <a href="#sample" class="btn btn-outline-primary">See a Sample Report</a>
                     </div>
                     <p class="mt-4 text-muted"><i class="bi bi-people-fill me-2"></i>Trusted by 10,000+ test-takers</p>
@@ -499,10 +504,15 @@
                     <p class="lead mb-4">Join thousands who have gained valuable insights into their cognitive and emotional patterns.</p>
                     <div class="d-flex flex-wrap gap-3 justify-content-center">
                         @auth
-                            <a href="{{ route('quiz.start') }}" class="btn btn-light btn-lg">Start the Test Now</a>
+                            @if($quiz = App\Models\Quiz::active()->first())
+                                <a href="{{ route('quiz.start', $quiz) }}" class="btn btn-primary">Start the Test</a>
+                            @else
+                                <span class="btn btn-secondary">No quizzes available</span>
+                            @endif
                         @else
-                            <a href="{{ route('register') }}" class="btn btn-light btn-lg">Create Account</a>
+                            <a href="{{ route('register') }}" class="btn btn-primary">Start the Test</a>
                         @endauth
+
                         <a href="#sample" class="btn btn-outline-light btn-lg">View Sample Report</a>
                     </div>
                 </div>

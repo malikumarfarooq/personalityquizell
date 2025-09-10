@@ -13,7 +13,7 @@
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <form action="{{ route('admin.questions.store') }}" method="POST">
+                <form action="{{ route('admin.questions.store') }}" method="POST" id="questionForm">
                     @csrf
 
                     <div class="row">
@@ -81,7 +81,21 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between">
+                    <!-- Options Section (only for multiple choice and checkbox) -->
+                    <div id="optionsSection" style="display: none;">
+                        <hr>
+                        <h5>Options</h5>
+
+                        <div id="optionsContainer">
+                            <!-- Options will be added here dynamically -->
+                        </div>
+
+                        <button type="button" id="addOption" class="btn btn-sm btn-outline-primary mt-2">
+                            <i class="fas fa-plus me-1"></i> Add Option
+                        </button>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
                         <button type="submit" class="btn btn-primary">Create Question</button>
                         <a href="{{ route('admin.questions.index') }}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
@@ -90,3 +104,90 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('type');
+            const optionsSection = document.getElementById('optionsSection');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const addOptionBtn = document.getElementById('addOption');
+            let optionCount = 0;
+
+            // Show/hide options based on question type
+            function toggleOptionsSection() {
+                if (typeSelect.value === 'multiple_choice' || typeSelect.value === 'checkbox') {
+                    optionsSection.style.display = 'block';
+                    if (optionCount === 0) {
+                        addOption();
+                    }
+                } else {
+                    optionsSection.style.display = 'none';
+                    optionsContainer.innerHTML = '';
+                    optionCount = 0;
+                }
+            }
+
+            // Add a new option field
+            function addOption() {
+                optionCount++;
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-item card mb-2';
+                optionDiv.innerHTML = `
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label class="form-label">Option Text *</label>
+                            <input type="text" class="form-control" name="options[${optionCount}][text]" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-2">
+                            <label class="form-label">Score</label>
+                            <input type="number" class="form-control" name="options[${optionCount}][score]" value="0" min="0" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-2">
+                            <label class="form-label">Correct</label>
+                            <div class="form-check mt-2">
+                                <input type="checkbox" class="form-check-input" name="options[${optionCount}][is_correct]" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-2">
+                            <label class="form-label">Action</label>
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-option" style="display: block;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+                optionsContainer.appendChild(optionDiv);
+
+                // Add event listener for remove button
+                const removeBtn = optionDiv.querySelector('.remove-option');
+                removeBtn.addEventListener('click', function() {
+                    if (optionsContainer.children.length > 1) {
+                        optionDiv.remove();
+                        optionCount--;
+                    } else {
+                        alert('At least one option is required.');
+                    }
+                });
+            }
+
+            // Initial toggle based on selected type
+            toggleOptionsSection();
+
+            // Event listeners
+            typeSelect.addEventListener('change', toggleOptionsSection);
+            addOptionBtn.addEventListener('click', addOption);
+        });
+    </script>
+@endpush

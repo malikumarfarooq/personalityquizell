@@ -7,39 +7,25 @@ use App\Http\Controllers\PaymentController;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/', function () {
     return view('home');
 });
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-
-// Quiz Routes (Public)
+// Quiz Routes (Public) - KEEP ONLY THIS SET
 Route::controller(QuizController::class)->group(function () {
-    Route::get('/quiz', 'start')->name('quiz.start');
-    Route::get('/quiz/begin', 'begin')->name('quiz.begin');
-    Route::get('/quiz/question/{question}/{currentQuestion}', 'showQuestion')->name('quiz.question');
-    Route::post('/quiz/answer', 'answer')->name('quiz.answer');
-    Route::get('/quiz/analysis-choice', 'analysisChoice')->name('quiz.analysis-choice');
-    Route::post('/quiz/results', 'results')->name('quiz.results');
+    Route::get('/quizzes', 'index')->name('quiz.index'); // New route for quiz selection
+    Route::get('/quiz/{quiz}/start', 'start')->name('quiz.start');
+    Route::get('/quiz/{quiz}/begin', 'begin')->name('quiz.begin');
+    Route::get('/quiz/{quiz}/question/{question}/{currentQuestion}', 'showQuestion')->name('quiz.question');
+    Route::post('/quiz/{quiz}/answer', 'answer')->name('quiz.answer');
+    Route::get('/quiz/{quiz}/analysis-choice', 'analysisChoice')->name('quiz.analysis-choice');
+    Route::post('/quiz/{quiz}/results', 'results')->name('quiz.results');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Authenticated Routes
-|--------------------------------------------------------------------------
-*/
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard
+
     Route::get('/dashboard', function () {
         return view('dashboard', [
-            'hasQuiz' => Quiz::where('is_active', true)->exists()
+            'quizzes' => Quiz::active()->get() // Return all active quizzes
         ]);
     })->name('dashboard');
 
@@ -48,11 +34,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Quiz Results & Payment Routes
-    |--------------------------------------------------------------------------
-    */
     Route::prefix('results')->group(function () {
         // View Results
         Route::get('/{result}', [ResultController::class, 'show'])->name('results.show');
@@ -71,9 +52,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 });
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes
-|--------------------------------------------------------------------------
-*/
 require __DIR__.'/auth.php';

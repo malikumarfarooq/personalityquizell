@@ -17,7 +17,7 @@
                             </div>
                         </div>
 
-                        <form method="POST" action="{{ route('quiz.answer') }}">
+                        <form method="POST" action="{{ route('quiz.answer', $quiz) }}">
                             @csrf
                             <input type="hidden" name="question_id" value="{{ $question->id }}">
                             <input type="hidden" name="current_question" value="{{ $currentQuestion }}">

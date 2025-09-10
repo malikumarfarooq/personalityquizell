@@ -26,7 +26,7 @@
 
                         <hr class="my-4">
 
-                        <a href="{{ route('quiz.begin') }}" class="btn btn-primary btn-lg px-5 py-3">
+                        <a href="{{ route('quiz.begin', $quiz) }}" class="btn btn-primary btn-lg px-5 py-3">
                             <i class="bi bi-play-circle me-2"></i> START QUIZ NOW
                         </a>
 

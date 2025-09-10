@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Option extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['question_id', 'text', 'score', 'is_active'];
+    protected $fillable = ['question_id', 'text', 'score', 'is_correct', 'is_active'];
 
     public function question(): BelongsTo
     {
