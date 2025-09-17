@@ -6,10 +6,26 @@ use App\Http\Controllers\ResultController;
 use App\Http\Controllers\PaymentController;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('home');
-});
+// Home page
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Public pages
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/science', [PageController::class, 'science'])->name('science');
+Route::get('/research', [PageController::class, 'research'])->name('research');
+Route::get('/blog', [PageController::class, 'blog'])->name('blog');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/help', [PageController::class, 'help'])->name('help');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/support', [PageController::class, 'support'])->name('support');
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+Route::get('/cookies', [PageController::class, 'cookies'])->name('cookies');
+Route::get('/data-protection', [PageController::class, 'dataProtection'])->name('data-protection');
+
 // Quiz Routes (Public) - KEEP ONLY THIS SET
 Route::controller(QuizController::class)->group(function () {
     Route::get('/quizzes', 'index')->name('quiz.index'); // New route for quiz selection
