@@ -24,7 +24,7 @@
                     <p class="mt-4 text-muted"><i class="bi bi-people-fill me-2"></i>Trusted by 10,000+ test-takers</p>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block text-center">
-                    <img src="https://via.placeholder.com/600x500/f5f7ff/4a6cf7?text=Brain+Analysis" alt="Neuro-Emotional Profile" class="img-fluid rounded shadow">
+                    <img src="{{ asset('storage/images/1.png') }}" alt="Neuro-Emotional Profile" class="img-fluid rounded shadow">
                 </div>
             </div>
         </div>
